@@ -133,6 +133,23 @@ body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-s
 </style>
 </head>
 <body>
+<script>
+const PASS_HASH='e1a4fb6cb9fc2463dbedbc205bb722737ad7803676108beff45b0767a5dd04aa';
+async function sha256(m){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(m));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function checkPass(){const h=await sha256(document.getElementById('pw-inp').value);if(h===PASS_HASH){sessionStorage.setItem('lth_ok',h);document.getElementById('pw').style.display='none';document.getElementById('app').style.display='flex';}else{document.getElementById('pw-err').style.display='block';document.getElementById('pw-inp').value='';setTimeout(()=>document.getElementById('pw-err').style.display='none',3000);}}
+document.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('lth_ok')===PASS_HASH){document.getElementById('pw').style.display='none';document.getElementById('app').style.display='flex';}else{document.getElementById('pw').style.display='flex';document.getElementById('app').style.display='none';}document.getElementById('pw-inp').addEventListener('keydown',e=>{if(e.key==='Enter')checkPass();});});
+</script>
+<div id="pw" style="display:none;position:fixed;inset:0;background:#0d0f14;z-index:9999;flex-direction:column;align-items:center;justify-content:center;font-family:'Syne',sans-serif;">
+<div style="width:360px;padding:40px;background:#181c27;border:1px solid #222636;border-radius:16px;text-align:center;">
+<div style="width:46px;height:46px;background:#f0c040;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:17px;color:#000;margin:0 auto 18px;">LTH</div>
+<div style="font-size:19px;font-weight:800;color:#e2e8f0;margin-bottom:6px;">Nutrition Dashboard</div>
+<div style="font-family:'DM Mono',monospace;font-size:11px;color:#556080;margin-bottom:26px;">Enter your access password</div>
+<input id="pw-inp" type="password" placeholder="Password" autocomplete="off" style="width:100%;background:#12151c;border:1px solid #222636;color:#e2e8f0;font-family:'DM Mono',monospace;font-size:14px;padding:11px 16px;border-radius:8px;outline:none;margin-bottom:10px;text-align:center;letter-spacing:.15em;" onfocus="this.style.borderColor='#f0c040'" onblur="this.style.borderColor='#222636'"/>
+<div id="pw-err" style="display:none;font-family:'DM Mono',monospace;font-size:11px;color:#f87171;margin-bottom:10px;padding:8px;background:rgba(248,113,113,.08);border-radius:6px;">Incorrect password.</div>
+<button onclick="checkPass()" style="width:100%;background:#f0c040;border:none;color:#000;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;padding:12px;border-radius:8px;cursor:pointer;">Access Dashboard</button>
+<div style="font-family:'DM Mono',monospace;font-size:9px;color:#333a52;margin-top:18px;">LTH Confidential · Internal Use Only</div>
+</div></div>
+<div id="app" style="display:none;width:100%;">
 <div class="layout">
 <!-- SIDEBAR -->
 <div class="sidebar">
@@ -814,5 +831,6 @@ function buildMemberCard(m) {
   </div>`;
 }
 </script>
+</div>
 </body>
 </html>
